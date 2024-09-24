@@ -1,54 +1,61 @@
 {
   "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "title": "World Population Growth (Annually %)",
   "width": 800,
   "height": 600,
-  "title": "World Population Growth (Annually %)",
+  "projection": {
+    "type": "equalEarth"  
+  },
   "layer": [
     {
       "data": {
-        "url": "https://raw.githubusercontent.com/MZ244/Week-9-Homework/refs/heads/main/oceans.topojson",
+        "url": "https://raw.githubusercontent.com/MZ244/Week-9-Homework/refs/heads/main/ne_110m_admin_0_countries.json",
         "format": {
           "type": "topojson",
-          "feature": "ocean"
-        }
-      },
-      "mark": {
-        "type": "geoshape",
-        "fill": "#a6bddb"
-      }
-    },
-    {
-      "data": {
-        "url": "https://raw.githubusercontent.com/MZ244/Week-9-Homework/refs/heads/main/ne_10m_admin_0_countries.json",
-        "format": {
-          "type": "topojson",
-          "feature": "ne_10m_admin_0_countries"  
+          "feature": "ne_110m_admin_0_countries"
         }
       },
       "transform": [
         {
-          "lookup": "properties.NAME", 
+          "lookup": "properties.ADM0_ISO",
           "from": {
             "data": {
-              "url": "https://raw.githubusercontent.com/MZ244/Week-9-Homework/refs/heads/main/World%20Population%20growth%20(anually%25).csv"
+              "url": "https://raw.githubusercontent.com/MZ244/Week-9-Homework/refs/heads/main/World%20Population%20growth%20(anually%25).csv",
+              "format": {
+                "type": "csv"
+              }
             },
-            "key": "Country", 
-            "fields": ["Population Growth (%)"]
+            "key": "Country Code",
+            "fields": ["Population Growth (Annually %)"]
           }
+        },
+        {
+          "calculate": "isNaN(parseFloat(datum['Population Growth (Annually %)'])) || datum['Population Growth (Annually %)'] === null ? null : parseFloat(datum['Population Growth (Annually %)'])",
+          "as": "Population Growth (%)"
+        },
+        {
+          "filter": "datum['Population Growth (%)'] != null"
         }
       ],
-      "mark": "geoshape",
+      "mark": {
+        "type": "geoshape",
+        "stroke": "white",
+        "strokeWidth": 0.5
+      },
       "encoding": {
         "color": {
           "field": "Population Growth (%)",
           "type": "quantitative",
           "scale": {
-            "scheme": "blues"
-          }
+            "domain": [-5, 0, 2, 4, 6, 8, 10], 
+            "range": ["#67001f", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#d9ef8b", "#1a9850"],
+            "type": "threshold"
+          },
+          "title": "Population Growth (%)"
         },
         "tooltip": [
           {"field": "properties.NAME", "type": "nominal", "title": "Country"},
-          {"field": "Population Growth (%)", "type": "quantitative", "title": "Growth Rate (%)"}
+          {"field": "Population Growth (%)", "type": "quantitative", "format": ".2f", "title": "Population Growth (%)"}
         ]
       }
     },
@@ -62,12 +69,9 @@
       },
       "mark": {
         "type": "geoshape",
-        "stroke": "lightgray",
-        "strokeWidth": 0.5
+        "fill": null,
+        "stroke": "darkgray"
       }
     }
-  ],
-  "projection": {
-    "type": "mercator"
-  }
+  ]
 }
