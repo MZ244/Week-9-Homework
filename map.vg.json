@@ -54,7 +54,7 @@
           "field": "2023",
           "type": "quantitative",
           "scale": {
-            "domain": [-5, 0, 2, 4, 6, 8, 10], 
+            "domain": [-1, 0,1, 2, 3, 4], 
             "range": ["#67001f", "#d73027", "#f46d43", "#fdae61", "#fee08b", "#d9ef8b", "#1a9850"],
             "type": "threshold"
           },
